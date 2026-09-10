@@ -61,15 +61,15 @@ human-in-the-loop interrupt/resume via checkpointing.
                                            +-> :hold               (:hard? true)
 ```
 
-- `src/accounting/store.cljc` — `Store` protocol + `MemStore`:
+- `src/accounting/store.kotoba` — `Store` protocol + `MemStore`:
   registered clients, committed records, an append-only audit ledger.
-- `src/accounting/advisor.cljc` — `Advisor` protocol; `mock-advisor`
+- `src/accounting/advisor.kotoba` — `Advisor` protocol; `mock-advisor`
   (deterministic, default) proposes an accounting operation from a
   request; `llm-advisor` wraps a `langchain.model/ChatModel` — either
   way the advisor only ever produces a `:propose`-effect proposal,
   never a committed record, and LLM parse failures always yield
   `confidence 0.0` (forces escalation, never fabricated confidence).
-- `src/accounting/governor.cljc` — `AccountingGovernor/check`: a pure
+- `src/accounting/governor.kotoba` — `AccountingGovernor/check`: a pure
   function, wired as its own `:govern` node. Hard invariants
   (unregistered client, a proposal whose `:effect` isn't `:propose`)
   always route to `:hold`. Escalation invariants (`:submit-tax-filing`,
@@ -79,7 +79,7 @@ human-in-the-loop interrupt/resume via checkpointing.
   (`actor/approve!`), matching the README's robotics-premise statement
   that tax filing submission and client fund transfers always require
   human sign-off.
-- `src/accounting/actor.cljc` — `build-graph`, `run-request!`,
+- `src/accounting/actor.kotoba` — `build-graph`, `run-request!`,
   `approve!`: the `langgraph.graph/state-graph` wiring itself.
 
 ```bash
